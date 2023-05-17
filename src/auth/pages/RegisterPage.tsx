@@ -38,7 +38,7 @@ export const RegisterPage = () => {
   const dispatch = useDispatch();
   const [formSubmitted, setFormSubmitted] = useState(false);
   const { status, errorMessage } = useSelector((state) => state.auth);
-  const error = errorMessage?.errorMessage;
+  const error = errorMessage;
 
   const isCheckingAuthentication = useMemo(() => status === "checking");
   const {
@@ -109,7 +109,7 @@ export const RegisterPage = () => {
           </Grid>
 
           <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
-            <Grid item xs={12} display={!!errorMessage ? "" : "none"}>
+            <Grid item xs={12} display={!!errorMessage ? errorMessage : "none"}>
               <Alert severity="error">{error}</Alert>
             </Grid>
             <Grid item xs={12}>

@@ -22,6 +22,7 @@ export const LoginPage = () => {
   //Recuperando valores del store
 
   const { status, errorMessage } = useSelector((state) => state.auth);
+  console.log('LOGIN',errorMessage)
   const dispatch = useDispatch();
   // hook useForm
   const { formState, email, password, onInputChange } = useForm({
@@ -71,17 +72,10 @@ export const LoginPage = () => {
               value={password}
             />
           </Grid>
-          <Grid
-            sx={{
-              mt: 1,
-            }}
-            item
-            xs={12}
-            display={!!errorMessage ? "" : "none"}
-          >
-            <Alert severity="error">{errorMessage}</Alert>
-          </Grid>
           <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
+            <Grid item xs={12} display={!!errorMessage ? "Verifique email/password" : "none"}>
+              <Alert severity="error">{errorMessage}</Alert>
+            </Grid>
             <Grid item xs={12} sm={6}>
               <Button
                 disabled={isAuthenticating}

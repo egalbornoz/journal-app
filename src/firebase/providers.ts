@@ -87,7 +87,7 @@ export const loginWithEmailPassword = async ({ email, password }) => {
   } catch (error) {
     return {
       ok: false,
-      errorMessage: error.message,
+      errorMessage: error,
     };
   }
 };
