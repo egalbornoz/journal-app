@@ -18,17 +18,18 @@ import {
   startLoginWithEmailPassword,
 } from "../../store/auth";
 
+const formData = {
+  email: "",
+  password: "",
+};
+
 export const LoginPage = () => {
   //Recuperando valores del store
 
   const { status, errorMessage } = useSelector((state) => state.auth);
-  console.log('LOGIN',errorMessage)
   const dispatch = useDispatch();
   // hook useForm
-  const { formState, email, password, onInputChange } = useForm({
-    email: "",
-    password: "",
-  });
+  const { formState, email, password, onInputChange } = useForm(formData);
   // Memoriza el estado de la autenticación
   const isAuthenticating = useMemo(() => status === "checking", [status]);
 
@@ -73,7 +74,11 @@ export const LoginPage = () => {
             />
           </Grid>
           <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
-            <Grid item xs={12} display={!!errorMessage ? "Verifique email/password" : "none"}>
+            <Grid
+              item
+              xs={12}
+              display={!!errorMessage ? "Verifique email/password" : "none"}
+            >
               <Alert severity="error">{errorMessage}</Alert>
             </Grid>
             <Grid item xs={12} sm={6}>

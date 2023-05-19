@@ -1,7 +1,16 @@
-import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes } from ".";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import {
+  addNewEmptyNote,
+  savingNewNote,
+  setActiveNote,
+  setNotes,
+  setPhotosToActivedNote,
+  setSaving,
+  updateNote,
+} from ".";
 import { FirebaseDB } from "../../firebase/config";
 import { collection, doc, setDoc } from "firebase/firestore/lite";
-import { loadNotes } from "../../helpers";
+import { fileUpload, loadNotes } from "../../helpers";
 
 export const startNewNote = () => {
   return async (dispatch, getState) => {
@@ -34,5 +43,37 @@ export const startLoadingNotes = () => {
     const notes = await loadNotes(uid);
 
     dispatch(setNotes(notes));
+  };
+};
+
+export const startSaveNote = () => {
+  return async (dispatch, getState) => {
+    const { uid } = getState().auth;
+    const { active: note } = getState().journal;
+    const noteToFireStore = { ...note };
+    delete noteToFireStore.id;
+
+    const docRef = doc(FirebaseDB, `${uid}/journal/notes/${note.id}`);
+    await setDoc(docRef, noteToFireStore, { merge: true }); //Actualizar nota
+
+    dispatch(updateNote(note));
+  };
+};
+
+export const startUploadingFiles = (files = []) => {
+  return async (dispatch) => {
+    dispatch(setSaving());
+
+    // Enviar multiples imagenes  simultaneamente a cloudinary
+
+    const fileUploadPromises = [];
+
+    for (const file of files) {
+      fileUploadPromises.push(fileUpload(file));
+    }
+
+    const photosUrl = await Promise.all(fileUploadPromises);
+    // se setean las imagenes en el state
+    dispatch(setPhotosToActivedNote(photosUrl));
   };
 };
