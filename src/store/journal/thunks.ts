@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   addNewEmptyNote,
+  deleteNoteById,
   savingNewNote,
   setActiveNote,
   setNotes,
@@ -9,7 +10,7 @@ import {
   updateNote,
 } from ".";
 import { FirebaseDB } from "../../firebase/config";
-import { collection, doc, setDoc } from "firebase/firestore/lite";
+import { collection, deleteDoc, doc, setDoc } from "firebase/firestore/lite";
 import { fileUpload, loadNotes } from "../../helpers";
 
 export const startNewNote = () => {
@@ -57,6 +58,23 @@ export const startSaveNote = () => {
     await setDoc(docRef, noteToFireStore, { merge: true }); //Actualizar nota
 
     dispatch(updateNote(note));
+  };
+};
+export const startDeleteNote = () => {
+  return async (dispatch, getState) => {
+    const { uid } = getState().auth;
+    const { active: note } = getState().journal;
+
+
+    const docRef = doc(FirebaseDB, `${uid}/journal/notes/${note.id}`);
+
+    //Se borra la nota de firebase
+    const resp = await deleteDoc(docRef);
+
+//Borrar imagenes de cloudinary
+//Borrar la nota del state
+
+    dispatch(deleteNoteById(note.id));
   };
 };
 
